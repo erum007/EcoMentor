@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>RahaTur - Leading You To Trip Ease</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="help" align="center">
+    <div class="container mt-3"><h1 style="font-size:3rem; color: white; text-shadow: 2px 2px black; font-family: 'Open Sans', sans-serif;" class="h1">Virtual Payment Methods</h1></div>
+        <div class="container mt-5" id="paypal-button"></div>
+</div>
+<style>
+    .help{
+        margin-top: 16%;
+    }
+    body{
+        background: url(./img/green.jpg) no-repeat center fixed;
+    }
+</style>
+        <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+        <script>
+        paypal.Button.render({
+        // Configure environment
+        env: 'sandbox',
+        client: {
+        sandbox: 'demo_sandbox_client_id',
+        production: 'demo_production_client_id'
+        },
+        // Customize button (optional)
+        locale: 'en_US',
+        style: {
+        size: 'small',
+        color: 'gold',
+        shape: 'pill',
+        },
+        // Set up a payment
+        payment: function (data, actions) {
+        return actions.payment.create({
+        transactions: [{
+        amount: {
+        total: '0.01',
+        currency: 'USD'
+        }
+        }]
+        });
+        },
+        // Execute the payment
+        onAuthorize: function (data, actions) {
+        return actions.payment.execute()
+        .then(function () {
+        // Show a confirmation message to the buyer
+        window.alert('Thank you for your purchase!');
+        });
+        }
+        }, '#paypal-button');
+        </script>
+    </body>
+</html>

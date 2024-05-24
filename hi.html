@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>RahaTur: Leading You To Trip Ease</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no, minimal-ui">
+    <!-- meta name="apple-mobile-web-app-capable" content="yes" -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/naptha/tesseract.js/1.0.7/dist/tesseract.js"></script>
+</head>
+
+<body>
+    <h1 style= "color: white; font-family: 'Open Sans', sans-serif;" align="center">Tesseract OCR Translator</h1>
+    <div align="center">
+        <video id="player" controls autoplay playsinline></video>
+        <canvas id="canvas" width="600" height="243"></canvas>
+        <div class="button">
+            <button style="font-family: 'Open Sans', sans-serif;" id="capture">Capture Turkish</button>
+        </div>
+        <br>
+        <div class="button">
+            <button style="font-family: 'Open Sans', sans-serif;" id="captureeng">Capture English</button>
+        </div>
+        <div id="msg" align="center"></div>
+        <canvas id="snapshot" width="300" height="100"></canvas>
+        <br>
+        <script>
+            var video = document.getElementById("player"),
+                canvas = document.getElementById("canvas"),
+                ctx = canvas.getContext("2d");
+            requestAnimationFrame(draw);
+    
+            function draw() {
+                canvas.width = 400;
+                canvas.height = 200;
+                ctx.drawImage(video, 550, 550, 550, 550,
+                    0, 0, 550, 400);
+                imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                data = imgData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    ave = (data[i + 0] + data[i + 1] + data[i + 2]) / 3;
+                    data[i + 0] =
+                        data[i + 1] =
+                        data[i + 2] = (ave > 128) ? 255 : 0;
+                    data[i + 3] = 255;
+                }
+                ctx.putImageData(imgData, 0, 0);
+                requestAnimationFrame(draw);
+            }
+            var snapshotCanvas = document.getElementById('snapshot');
+            var captureButton = document.getElementById('capture');
+            var captureButtoneng = document.getElementById('captureeng');
+            var snapshotButton = document.getElementById('snapshotbutton');
+            var handleSuccess = function(stream) {
+                video.srcObject = stream;
+            };
+            var num = 1;
+    
+            captureButton.addEventListener('click', function() {
+                var context = snapshot.getContext('2d');
+                context.drawImage(video, 400, 600, 600, 400, 0, 0, snapshotCanvas.width,
+                    snapshotCanvas.height);
+                const url = snapshot.toDataURL("image/png");
+                Tesseract
+                    .recognize(url, {
+                        lang: 'tur'
+                    })
+                    .progress(function(p) {
+                        $("#msg").text(p.status + ": " + p.progress)
+                    })
+                    .then(function(result) {
+                        console.log(result)
+                        $("#msg").text("Progress Complete")
+                        var elem = document.createElement('div');
+                        elem.innerHTML = "<div id=" + num + " style='width:300px; background-color:#EEEEEE'><img src=" + url + " /></div><br>"
+                        var parent = document.getElementById("results");
+                        parent.insertBefore(elem, parent.firstChild);
+                        var numdiv = document.getElementById(num);
+                        var msg = document.createElement('div');
+                        msg.innerHTML = result.text;
+                        numdiv.appendChild(msg);
+                        num += 1;
+                    });
+            });
+            captureButtoneng.addEventListener('click', function() {
+                var context = snapshot.getContext('2d');
+                context.drawImage(video, 400, 600, 600, 400, 0, 0, snapshotCanvas.width,
+                    snapshotCanvas.height);
+                const url = snapshot.toDataURL("image/png");
+                Tesseract
+                    .recognize(url, {
+                        lang: 'eng'
+                    })
+                    .progress(function(p) {
+                        $("#msg").text(p.status + ": " + p.progress)
+                    })
+                    .then(function(result) {
+                        console.log(result)
+                        $("#msg").text("Progress Complete")
+                        var elem = document.createElement('div');
+                        elem.innerHTML = "<div id=" + num + " style='width:300px; background-color:#EEEEEE'><img src=" + url + " /></div><br>"
+                        var parent = document.getElementById("results");
+                        parent.insertBefore(elem, parent.firstChild);
+                        var numdiv = document.getElementById(num);
+                        var msg = document.createElement('div');
+                        msg.innerHTML = result.text;
+                        numdiv.appendChild(msg);
+                        num += 1;
+                    });
+            });
+            var front = false;
+            var constraints = {
+                audio: false,
+                video: {
+                    width: 1920,
+                    height: 1080,
+                    facingMode: (front ? "user" : "environment")
+                }
+            };
+            navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess);
+        </script>
+    </div>
+<div id="results" align="center"></div>
+
+<div align="center" class="container mt-3" id="google_translate_element"></div>
+	
+<script type="text/javascript">
+	function googleTranslateElementInit() {
+		new google.translate.TranslateElement(
+			{pageLanguage: 'en'},
+			'google_translate_element'
+		);
+	}
+</script>
+<script type="text/javascript" src=
+"https://translate.google.com/translate_a/element.js?
+	cb=googleTranslateElementInit">
+</script>
+<style>
+    
+body {
+  margin-top: 2rem;
+  background:url(./iStock-889136412.jpg) no-repeat center fixed;
+  background-size: cover;
+}
+#player {
+  width: 0.5%;
+  height: 0%;
+}
+#capture{
+padding: 10px 30px;
+font-weight: bold;
+font-size: 1.4em;
+background-color: #842;
+color: #fff;
+border-style: none;
+}
+#captureeng{
+padding: 10px 30px;
+font-weight: bold;
+font-size: 1.4em;
+background-color: #248;
+color: #fff;
+border-style: none;
+}
+    </style>
+</body>
+
+</html>
